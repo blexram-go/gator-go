@@ -55,7 +55,7 @@ func write(cfg Config) error {
 		return err
 	}
 
-	file, err := os.Open(fullPath)
+	file, err := os.Create(fullPath)
 	if err != nil {
 		return err
 	}
