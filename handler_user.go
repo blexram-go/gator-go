@@ -45,7 +45,7 @@ func handlerRegister(s *state, cmd command) error {
 		Name:      name,
 	})
 	if err != nil {
-		return fmt.Errorf("couldn't creat user: %w", err)
+		return fmt.Errorf("couldn't create user: %w", err)
 	}
 
 	err = s.cfg.SetUser(user.Name)
@@ -55,5 +55,15 @@ func handlerRegister(s *state, cmd command) error {
 
 	fmt.Println("User successfully created!")
 	log.Println(user)
+	return nil
+}
+
+func handlerReset(s *state, cmd command) error {
+	err := s.db.DeleteUsers(context.Background())
+	if err != nil {
+		return fmt.Errorf("couldn't delete users: %w", err)
+	}
+
+	fmt.Println("users successfully deleted!")
 	return nil
 }
