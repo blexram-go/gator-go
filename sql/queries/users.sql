@@ -18,3 +18,8 @@ SELECT * FROM users;
 
 -- name: DeleteUsers :exec
 DELETE FROM users;
+
+-- name: GetFeedUser :one
+SELECT *
+FROM users
+WHERE id = $1;
