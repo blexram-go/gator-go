@@ -59,9 +59,14 @@ func handlerGetFeedFollows(s *state, cmd command) error {
 		return fmt.Errorf("unable to get followed feeds: %w", err)
 	}
 
-	fmt.Printf("Followed Feeds for %s\n", currentUserName)
+	if len(feedFollows) == 0 {
+		fmt.Println("No feed follows found for this user.")
+		return nil
+	}
+
+	fmt.Printf("Followed Feeds for user %s:\n", currentUserName)
 	for _, feedFollow := range feedFollows {
-		fmt.Printf("-     %s\n", feedFollow.FeedName)
+		fmt.Printf("* %s\n", feedFollow.FeedName)
 	}
 	return nil
 }
