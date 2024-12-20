@@ -32,7 +32,7 @@ func handlerFollow(s *state, cmd command, user database.User) error {
 	}
 
 	fmt.Printf("Feed Name: %s\n", feedFollow.FeedName)
-	fmt.Printf("User: %s\n", feedFollow.UserName)
+	fmt.Printf("Followed by User: %s\n", feedFollow.UserName)
 	return nil
 }
 
