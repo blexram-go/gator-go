@@ -9,19 +9,12 @@ import (
 	"github.com/google/uuid"
 )
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("%s takes an argument", cmd.Name)
 	}
 
-	currentUserName := s.cfg.CurrentUserName
 	feedURL := cmd.Args[0]
-
-	currentUser, err := s.db.GetUser(context.Background(), currentUserName)
-	if err != nil {
-		return fmt.Errorf("unable to get user: %w", err)
-	}
-
 	currentFeed, err := s.db.GetFeed(context.Background(), feedURL)
 	if err != nil {
 		return fmt.Errorf("unable to get feed: %w", err)
@@ -32,7 +25,7 @@ func handlerFollow(s *state, cmd command) error {
 		CreatedAt: time.Now().UTC(),
 		UpdatedAt: time.Now().UTC(),
 		FeedID:    currentFeed.ID,
-		UserID:    currentUser.ID,
+		UserID:    user.ID,
 	})
 	if err != nil {
 		return fmt.Errorf("unable to create feed follow: %w", err)
@@ -43,18 +36,12 @@ func handlerFollow(s *state, cmd command) error {
 	return nil
 }
 
-func handlerGetFeedFollows(s *state, cmd command) error {
+func handlerGetFeedFollows(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 0 {
 		return fmt.Errorf("%s does not take any arguments", cmd.Name)
 	}
 
-	currentUserName := s.cfg.CurrentUserName
-	currentUser, err := s.db.GetUser(context.Background(), currentUserName)
-	if err != nil {
-		return fmt.Errorf("unable to get user: %w", err)
-	}
-
-	feedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), currentUser.ID)
+	feedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		return fmt.Errorf("unable to get followed feeds: %w", err)
 	}
@@ -64,7 +51,7 @@ func handlerGetFeedFollows(s *state, cmd command) error {
 		return nil
 	}
 
-	fmt.Printf("Followed Feeds for user %s:\n", currentUserName)
+	fmt.Printf("Followed Feeds for user %s:\n", user.Name)
 	for _, feedFollow := range feedFollows {
 		fmt.Printf("* %s\n", feedFollow.FeedName)
 	}
